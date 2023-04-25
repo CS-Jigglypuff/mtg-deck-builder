@@ -1,5 +1,8 @@
 export function Home() {
   return(
-    <h1>Book</h1>
+    <div className="FullHome">
+      Book
+    </div>
+
   );
 }

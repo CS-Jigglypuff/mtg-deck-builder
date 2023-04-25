@@ -1,5 +1,8 @@
 export function Deckview() {
   return(
-    <h1>Deckview</h1>
+    <div className="FullDeckView">
+      Decks
+    </div>
+
   );
 }

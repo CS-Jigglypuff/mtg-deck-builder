@@ -1,4 +1,4 @@
-import deck from "./mockDeck.json";
+// import deck from "./mockDeck.json";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const parsePxNumber = (str) => {
@@ -7,17 +7,21 @@ const parsePxNumber = (str) => {
   return num ? num : 0;
 };
 
-const Card = ({ children, row, col, selected, over, setStacks, clicked }) => {
+const Card = ({ children, row, col, selected, over, setStacks, clicked, image }) => {
+  console.log("c", children);
   const cardStyle = {
-    height: "90px",
-    width: "60px",
+    height: "225px",
+    width: "150px",
     backgroundColor: "pink",
     border: "1px solid brown",
     position: "absolute",
-    top: `${row * 24}px`,
+    top: `${row * 32}px`,
     filter: "drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.25))",
     cursor: "pointer",
     userSelect: "none",
+    backgroundImage: `url(${image})`,
+    backgroundSize: "150px 225px",
+    backgroundColor: "", // opacity off
   };
   return (
     <div
@@ -66,14 +70,14 @@ const Card = ({ children, row, col, selected, over, setStacks, clicked }) => {
         console.log("over", over.current.col, over.current.row);
       }}
     >
-      {children}
+      {/* {children} */}
     </div>
   );
 };
 
 const Stack = ({ cards, col, selected, over, setStacks, clicked }) => {
   const StackContainer = ({ children }) => {
-    return <div style={{ position: "relative", left: `${col * 90}px` }}>{children}</div>;
+    return <div style={{ position: "relative", left: `${col * 200}px` }}>{children}</div>;
   };
   return (
     <StackContainer>
@@ -86,6 +90,7 @@ const Stack = ({ cards, col, selected, over, setStacks, clicked }) => {
           over={over}
           setStacks={setStacks}
           clicked={clicked}
+          image={card.image_uris}
         >
           {card.name}
           {",,,,,,,"}
@@ -96,23 +101,39 @@ const Stack = ({ cards, col, selected, over, setStacks, clicked }) => {
   );
 };
 
-const sortStacks = () => {
+const getManaVal = (str) => {
+  const matches = str.match(/{/g);
+  return matches?.length || 0;
+};
+
+const sortStacks = (deck) => {
   const uniques = new Set();
   const stacks = [];
   for (const el of deck) {
-    if (!uniques.has(el.cost)) {
+    if (!uniques.has(getManaVal(el.mana_cost))) {
       stacks.push([]);
-      uniques.add(el.cost);
+      uniques.add(getManaVal(el.mana_cost));
     }
   }
   for (const el of deck) {
-    stacks[el.cost - 1].push(el);
+    stacks[getManaVal(el.mana_cost)].push(el);
   }
   return stacks;
 };
 
 const Deckbuilder = () => {
-  const [stacks, setStacks] = useState(sortStacks(deck));
+  useEffect(() => {
+    if (stacks.length === 0)
+      fetch("/decks")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          const stacks = sortStacks(data);
+          console.log(stacks);
+          setStacks(stacks);
+        });
+  }, []);
+  const [stacks, setStacks] = useState([]);
   const areaRef = useRef();
   const clicked = useRef(false);
   const selected = useRef({ col: 0, row: 0 });
@@ -127,39 +148,40 @@ const Deckbuilder = () => {
     for (const stack of stacks) {
       maxRows = Math.max(maxRows, stack.length);
     }
-    const height = 90 + (maxRows - 1) * 24;
-    const width = maxCols * 60 + (maxCols - 1) * 30;
+    console.log("mr", maxRows);
+    const height = 225 + (maxRows - 1) * 32;
+    const width = maxCols * 150 + (maxCols - 1) * 50;
     return { height, width };
   }, [stacks]);
 
-  useEffect(() => {
-    let initialLeft = 0;
-    let initialTop = 0;
-    areaRef.current.addEventListener("mousedown", (e) => {
-      clickedPos.current.startX = e.clientX;
-      clickedPos.current.startY = e.clientY;
-      clicked.current = true;
+  // useEffect(() => {
+  //   let initialLeft = 0;
+  //   let initialTop = 0;
+  //   areaRef.current.addEventListener("mousedown", (e) => {
+  //     clickedPos.current.startX = e.clientX;
+  //     clickedPos.current.startY = e.clientY;
+  //     clicked.current = true;
 
-      initialLeft = cardRef.current.offsetLeft;
-      initialTop = cardRef.current.offsetTop;
-      console.log(initialLeft, initialTop);
-    });
-    areaRef.current.addEventListener("mouseup", (e) => {
-      clicked.current = false;
-    });
-    areaRef.current.addEventListener("mousemove", (e) => {
-      if (clicked.current) {
-        // console.log(clickedPos.current.startY - e.clientY, e.clientX - clickedPos.current.startX);
-        console.log(cardRef.current.style.left);
-        console.log(parsePxNumber(cardRef.current.style.left));
-        cardRef.current.style.left = `${e.clientX - clickedPos.current.startX + initialLeft}px`;
-        cardRef.current.style.top = `${
-          // parsePxNumber(cardRef.current.style.top) +
-          e.clientY - clickedPos.current.startY + initialTop
-        }px`;
-      }
-    });
-  }, []);
+  //     initialLeft = cardRef.current.offsetLeft;
+  //     initialTop = cardRef.current.offsetTop;
+  //     console.log(initialLeft, initialTop);
+  //   });
+  //   areaRef.current.addEventListener("mouseup", (e) => {
+  //     clicked.current = false;
+  //   });
+  //   areaRef.current.addEventListener("mousemove", (e) => {
+  //     if (clicked.current) {
+  //       // console.log(clickedPos.current.startY - e.clientY, e.clientX - clickedPos.current.startX);
+  //       console.log(cardRef.current.style.left);
+  //       console.log(parsePxNumber(cardRef.current.style.left));
+  //       cardRef.current.style.left = `${e.clientX - clickedPos.current.startX + initialLeft}px`;
+  //       cardRef.current.style.top = `${
+  //         // parsePxNumber(cardRef.current.style.top) +
+  //         e.clientY - clickedPos.current.startY + initialTop
+  //       }px`;
+  //     }
+  //   });
+  // }, []);
 
   return (
     <div
@@ -171,7 +193,7 @@ const Deckbuilder = () => {
       }}
       ref={areaRef}
     >
-      {/* {stacks.map((stack, col) => (
+      {stacks.map((stack, col) => (
         <Stack
           key={col}
           cards={stack}
@@ -181,8 +203,8 @@ const Deckbuilder = () => {
           setStacks={setStacks}
           clicked={clicked}
         />
-      ))} */}
-      <div
+      ))}
+      {/* <div
         style={{
           height: "90px",
           width: "60px",
@@ -193,7 +215,7 @@ const Deckbuilder = () => {
         ref={cardRef}
       >
         hi
-      </div>
+      </div> */}
     </div>
   );
 };

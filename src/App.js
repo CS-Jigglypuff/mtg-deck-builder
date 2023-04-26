@@ -1,7 +1,7 @@
 import { Link, Route, Routes } from "react-router-dom";
 import { Home } from "./components/Home";
 import { Deckview } from "./components/Deckview";
-import Deckbuilder from "./components/Deckbuilder";
+import Deckbuilder from "./components/deckbuilder";
 
 export default function App() {
   return (
@@ -15,7 +15,7 @@ export default function App() {
             <Link to="/decks">Decks</Link>
           </li>
           <li>
-            <Link to="/builder">Deckbuilder</Link>
+            <Link to="/deckbuilder">Deckbuilder</Link>
           </li>
         </ul>
       </nav>
@@ -23,9 +23,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/decks" element={<Deckview />} />
-          <Route path="/builder" element={<Deckbuilder />} />
+          <Route path="/deckbuilder" element={<Deckbuilder />} />
         </Routes>
-        <Deckbuilder />
       </main>
     </div>
   );

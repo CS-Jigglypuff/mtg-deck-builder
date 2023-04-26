@@ -1,12 +1,18 @@
 const express = require('express');
+const dbController = require('./controllers/dbController');
 const app = express();
 const path = require('path');
-const db = require('./db');
 
 app.use(express.static(__dirname));
+app.use(express.json);
+
+app.get('/decks', dbController.get10Cards, (req, res) => {
+  console.log('test');
+  res.status(200).json(res.locals.cards);
+});
 
 app.get('*', (req, res) => {
-  res.sendFile(__dirname, 'index.html');
+  res.sendFile(path.join(__dirname, '../src/html/index.html'));
 });
 
 app.get('/', (err, req, res, next) => {
@@ -19,7 +25,7 @@ app.get('/', (err, req, res, next) => {
   res.status(500).json(error.message);
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`App listening to port ${PORT}...`);

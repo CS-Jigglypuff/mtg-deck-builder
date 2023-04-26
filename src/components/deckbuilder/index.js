@@ -12,7 +12,6 @@ const Card = ({ children, row, col, selected, over, setStacks, clicked, image })
   const cardStyle = {
     height: "225px",
     width: "150px",
-    backgroundColor: "pink",
     border: "1px solid brown",
     position: "absolute",
     top: `${row * 32}px`,
@@ -20,8 +19,9 @@ const Card = ({ children, row, col, selected, over, setStacks, clicked, image })
     cursor: "pointer",
     userSelect: "none",
     backgroundImage: `url(${image})`,
-    backgroundSize: "150px 225px",
-    backgroundColor: "", // opacity off
+    backgroundSize: "155px 230px",
+    backgroundColor: "rgba(0,0,0,0)",
+    backgroundPosition: "center",
   };
   return (
     <div
@@ -187,7 +187,7 @@ const Deckbuilder = () => {
     <div
       style={{
         position: "relative",
-        backgroundColor: "red",
+        backgroundColor: "rgba(245,245,220,0.2)",
         height: dimensions.height,
         width: dimensions.width,
       }}

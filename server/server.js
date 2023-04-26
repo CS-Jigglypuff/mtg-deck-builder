@@ -4,11 +4,11 @@ const app = express();
 const path = require('path');
 
 app.use(express.static(__dirname));
-app.use(express.json);
+app.use(express.json());
 
 app.get('/decks', dbController.get10Cards, (req, res) => {
-  console.log('test');
-  res.status(200).json(res.locals.cards);
+  const { cards } = res.locals;
+  res.status(200).json(cards);
 });
 
 app.get('*', (req, res) => {
@@ -25,7 +25,7 @@ app.get('/', (err, req, res, next) => {
   res.status(500).json(error.message);
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.listen(PORT, () => {
   console.log(`App listening to port ${PORT}...`);

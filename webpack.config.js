@@ -5,7 +5,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     filename: 'bundle.js',
   },
@@ -16,14 +16,13 @@ module.exports = {
     hot: true,
     open: false,
     static: {
-      directory: path.resolve(__dirname, 'dist'),
+      directory: path.join(__dirname, 'dist'),
       publicPath: '/dist',
     },
-    liveReload: true,
     headers: { 'Allow-Control-Allow-Origin': '*' },
     proxy: {
       '/': {
-        target: 'http://localhost:3000/',
+        target: 'http://localhost:3000',
       },
     },
   },

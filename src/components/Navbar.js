@@ -9,9 +9,9 @@ export function Navbar() {
             Home
           </button>
         </Link>
-        <Link to="/decks">
+        <Link to="/builder">
           <button>
-            Decks
+            Builder
           </button>
         </Link>
       </div>

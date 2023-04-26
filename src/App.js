@@ -1,6 +1,6 @@
 import { Link, Route, Routes } from 'react-router-dom';
 import { Home } from "./components/Home"
-import { Deckview } from './components/Deckview';
+import { Builder } from './components/Builder';
 import { Navbar } from './components/Navbar';
 
 export default function App() {
@@ -10,7 +10,7 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home/>}/>
-          <Route path="/decks" element={<Deckview/>}/>
+          <Route path="/builder" element={<Builder/>}/>
         </Routes>
       </main>
     </div>

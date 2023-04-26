@@ -6,7 +6,7 @@ const path = require('path');
 app.use(express.static(__dirname));
 app.use(express.json());
 
-app.get('/decks', dbController.get10Cards, (req, res) => {
+app.get('/decks', dbController.get20Cards, (req, res) => {
   const { cards } = res.locals;
   res.status(200).json(cards);
 });

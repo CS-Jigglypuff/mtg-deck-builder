@@ -1,0 +1,58 @@
+[
+  {
+    "name": "a",
+    "cost": 1
+  },
+  {
+    "name": "b",
+    "cost": 1
+  },
+  {
+    "name": "c",
+    "cost": 1
+  },
+  {
+    "name": "d",
+    "cost": 1
+  },
+  {
+    "name": "e",
+    "cost": 1
+  },
+  {
+    "name": "f",
+    "cost": 2
+  },
+  {
+    "name": "g",
+    "cost": 2
+  },
+  {
+    "name": "h",
+    "cost": 2
+  },
+  {
+    "name": "i",
+    "cost": 3
+  },
+  {
+    "name": "j",
+    "cost": 3
+  },
+  {
+    "name": "k",
+    "cost": 3
+  },
+  {
+    "name": "l",
+    "cost": 4
+  },
+  {
+    "name": "m",
+    "cost": 4
+  },
+  {
+    "name": "n",
+    "cost": 4
+  }
+]

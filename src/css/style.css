@@ -56,6 +56,7 @@ main{
   flex-direction: row;
   margin: 20px;
   flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 .DeckStyle{
@@ -74,13 +75,39 @@ main{
   grid-template-columns: repeat(6, 1fr)
 }
 
-
-
 .BuilderLeft{
   grid-column: 1;
   min-width: 266px;
+  background-color: green;
 }
 
 .BuilderRight{
   grid-column: 2 / span 5;
+  background-color: yellow;
+}
+
+.FilterDropDowns{
+  display: flex;
+  margin: 10px;
+}
+
+.CardLayout{
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.CardStyle{
+  width: 200px;
+  height: 300px;
+  background-color: white;
+  margin: 10px;
+  border-style: solid;
+  border-color: black;
+}
+
+select{
+  margin-right: 10px;
 }

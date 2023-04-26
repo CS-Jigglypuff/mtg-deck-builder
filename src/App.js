@@ -9,8 +9,8 @@ export default function App() {
       <Navbar/>
       <main>
         <Routes>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/builder" element={<Builder/>}/>
+          <Route path="/builder" element={<Home/>}/>
+          <Route path="/" element={<Builder/>}/>
         </Routes>
       </main>
     </div>

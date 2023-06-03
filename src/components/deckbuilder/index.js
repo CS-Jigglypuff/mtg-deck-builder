@@ -1,5 +1,5 @@
 // import deck from "./mockDeck.json";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 
 const parsePxNumber = (str) => {
   const numberSeg = str.match(/\d+/);
@@ -7,99 +7,107 @@ const parsePxNumber = (str) => {
   return num ? num : 0;
 };
 
-const Card = ({ children, row, col, selected, over, setStacks, clicked, image }) => {
-  console.log("c", children);
-  const cardStyle = {
-    height: "225px",
-    width: "150px",
-    border: "1px solid brown",
-    position: "absolute",
-    top: `${row * 32}px`,
-    filter: "drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.25))",
-    cursor: "pointer",
-    userSelect: "none",
-    backgroundImage: `url(${image})`,
-    backgroundSize: "155px 230px",
-    backgroundColor: "rgba(0,0,0,0)",
-    backgroundPosition: "center",
-  };
-  return (
-    <div
-      style={cardStyle}
-      onMouseDown={() => {
-        console.log(col, row);
-        selected.current.row = row;
-        selected.current.col = col;
-        console.log("Selected", selected.current.col, selected.current.row);
-        clicked.current = true;
-      }}
-      onMouseUp={() => {
-        clicked.current = false;
-        setStacks((prev) => {
-          const newStack = [...prev];
+const Card = forwardRef(
+  ({ children, row, col, selected, over, setStacks, clicked, image, cardRefsColl }, ref) => {
+    console.log("c", children);
+    const cardStyle = {
+      height: "225px",
+      width: "150px",
+      border: "1px solid brown",
+      position: "absolute",
+      top: `${row * 32}px`,
+      filter: "drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.25))",
+      cursor: "pointer",
+      userSelect: "none",
+      backgroundImage: `url(${image})`,
+      backgroundSize: "155px 230px",
+      backgroundColor: "rgba(0,0,0,0)",
+      backgroundPosition: "center",
+    };
+    return (
+      <div
+        // ref={(el) => (cardRefsColl[col][row] = el)}
+        ref={ref}
+        style={cardStyle}
+        onMouseDown={() => {
+          console.log(col, row);
+          selected.current.row = row;
+          selected.current.col = col;
+          console.log("Selected", selected.current.col, selected.current.row);
+          clicked.current = true;
+        }}
+        onMouseUp={() => {
+          clicked.current = false;
+          setStacks((prev) => {
+            const newStack = [...prev];
 
-          // Insert selected card at over dropoff point
-          newStack[over.current.col].splice(
-            over.current.row + 1,
-            0,
-            newStack[selected.current.col][selected.current.row]
-          );
+            // Insert selected card at over dropoff point
+            newStack[over.current.col].splice(
+              over.current.row + 1,
+              0,
+              newStack[selected.current.col][selected.current.row]
+            );
 
-          // Remove selected card from stack
-          if (over.current.col === selected.current.col) {
-            if (over.current.row > selected.current.row) {
-              // Moving to same stack and higher on the stack.
-              newStack[selected.current.col].splice(selected.current.row, 1);
+            // Remove selected card from stack
+            if (over.current.col === selected.current.col) {
+              if (over.current.row > selected.current.row) {
+                // Moving to same stack and higher on the stack.
+                newStack[selected.current.col].splice(selected.current.row, 1);
+              } else {
+                // Moving to same stack and lower on the stack. Above insert means we need + 1
+                newStack[selected.current.col].splice(selected.current.row + 1, 1);
+              }
             } else {
-              // Moving to same stack and lower on the stack. Above insert means we need + 1
-              newStack[selected.current.col].splice(selected.current.row + 1, 1);
+              // Moving to different stack
+              newStack[selected.current.col].splice(selected.current.row, 1);
+              console.log("Removing", selected.current.col, selected.current.row);
             }
-          } else {
-            // Moving to different stack
-            newStack[selected.current.col].splice(selected.current.row, 1);
-            console.log("Removing", selected.current.col, selected.current.row);
-          }
-          console.log(newStack);
+            console.log(newStack);
 
-          return newStack;
-        });
-      }}
-      onMouseOverCapture={() => {
-        over.current.row = row;
-        over.current.col = col;
-        console.log("over", over.current.col, over.current.row);
-      }}
-    >
-      {/* {children} */}
-    </div>
-  );
-};
+            return newStack;
+          });
+        }}
+        onMouseOverCapture={() => {
+          over.current.row = row;
+          over.current.col = col;
+          console.log("over", over.current.col, over.current.row);
+        }}
+      >
+        {/* {children} */}
+      </div>
+    );
+  }
+);
 
-const Stack = ({ cards, col, selected, over, setStacks, clicked }) => {
-  const StackContainer = ({ children }) => {
-    return <div style={{ position: "relative", left: `${col * 200}px` }}>{children}</div>;
-  };
-  return (
-    <StackContainer>
-      {cards.map((card, row) => (
-        <Card
-          key={row}
-          row={row}
-          col={col}
-          selected={selected}
-          over={over}
-          setStacks={setStacks}
-          clicked={clicked}
-          image={card.image_uris}
-        >
-          {card.name}
-          {",,,,,,,"}
-          {card.cost}
-        </Card>
-      ))}
-    </StackContainer>
-  );
-};
+const Stack = forwardRef(
+  ({ cards, col, selected, over, setStacks, clicked, cardRefsColl }, ref) => {
+    const StackContainer = ({ children }) => {
+      return <div style={{ position: "relative", left: `${col * 200}px` }}>{children}</div>;
+    };
+    return (
+      <StackContainer>
+        {cards.map((card, row) => (
+          <Card
+            key={row}
+            row={row}
+            col={col}
+            selected={selected}
+            over={over}
+            setStacks={setStacks}
+            clicked={clicked}
+            image={card.image_uris}
+            ref={ref}
+            cardRefsColl={cardRefsColl}
+          >
+            {card.name}
+            {",,,,,,,"}
+            {card.cost}
+          </Card>
+        ))}
+      </StackContainer>
+    );
+  }
+);
 
 const getManaVal = (str) => {
   const matches = str.match(/{/g);
@@ -122,8 +130,9 @@ const sortStacks = (deck) => {
 };
 
 const Deckbuilder = () => {
+  const [all, setAll] = useState([]);
   useEffect(() => {
-    if (stacks.length === 0)
+    if (stacks.length === 0) {
       fetch("/decks")
         .then((res) => res.json())
         .then((data) => {
@@ -132,13 +141,20 @@ const Deckbuilder = () => {
           console.log(stacks);
           setStacks(stacks);
         });
+      fetch("all")
+        .then((res) => res.json())
+        .then((data) => setAll(data));
+    }
   }, []);
   const [stacks, setStacks] = useState([]);
   const areaRef = useRef();
   const clicked = useRef(false);
   const selected = useRef({ col: 0, row: 0 });
-  const clickedPos = useRef({ startX: 0, startY: 0 });
   const over = useRef({ col: 0, row: 0 });
+  const cardRefsColl = useRef([]);
+  useEffect(() => {
+    console.log(cardRefsColl);
+  });
 
   const cardRef = useRef();
 
@@ -188,7 +204,7 @@ const Deckbuilder = () => {
       style={{
         position: "relative",
         backgroundColor: "rgba(245,245,220,0.2)",
-        height: dimensions.height,
+        height: dimensions.height + 1000,
         width: dimensions.width,
       }}
       ref={areaRef}
@@ -202,20 +218,16 @@ const Deckbuilder = () => {
           over={over}
           setStacks={setStacks}
           clicked={clicked}
+          cardRefsColl={cardRefsColl}
         />
       ))}
-      {/* <div
-        style={{
-          height: "90px",
-          width: "60px",
-          backgroundColor: "blue",
-          position: "absolute",
-          userSelect: "none",
-        }}
-        ref={cardRef}
-      >
-        hi
-      </div> */}
+      <div style={{ position: "absolute", top: `${0}px`, width: "150px", left: "900px" }}>
+        {all.map((card) => (
+          <img style={{ border: "1px solid brown", width: "100px" }} src={card.image_uris}>
+            {/* {card.name} */}
+          </img>
+        ))}
+      </div>
     </div>
   );
 };

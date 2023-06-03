@@ -1,5 +1,3 @@
 export function Home() {
-  return(
-    <h1>Book</h1>
-  );
+  return <h1>MTG Deck Builder</h1>;
 }
